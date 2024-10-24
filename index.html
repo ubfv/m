@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device=width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مجهول</title>
     <style>
         body {
@@ -18,12 +18,14 @@
         .container {
             width: 90%;
             max-width: 600px;
+            max-height: 80%; /* تصغير الحجم */
             background-color: #f3e5f5; /* لون بنفسجي فاتح للصفحة الداخلية */
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             padding: 40px;
             text-align: center;
             animation: fadeIn 1.5s ease-in-out;
+            overflow-y: auto; /* إضافة التمرير العمودي إذا كان المحتوى كبير */
         }
         .icon {
             font-size: 100px;
@@ -64,6 +66,7 @@
         footer {
             margin-top: 30px;
             color: #95a5a6;
+            font-size: 0.9em; /* حجم الخط أصغر */
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -80,7 +83,7 @@
         <button onclick="sendMessage()">إرسال</button>
 
         <footer>
-            <p>شكراً لزيارتك!</p>
+            <p>All rights reserved to Souris Freedom Channel.</p> <!-- نص حقوق القناة باللغة الإنجليزية -->
         </footer>
     </div>
 
