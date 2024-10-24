@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مرحباً بك</title>
+    <title>مجهول</title>
     <style>
         body {
             margin: 0;
@@ -27,7 +27,7 @@
         }
         .icon {
             font-size: 100px;
-            color: #FF6347; /* لون مميز */
+            color: #FF6347;
             margin-bottom: 20px;
         }
         h1 {
@@ -73,8 +73,8 @@
 <body>
     <div class="container">
         <div class="icon">👤</div> <!-- الرمز التوضيحي بحجم كبير ولون مميز -->
-        <h1>مرحباً بك في موقعنا!</h1>
-        <p>يرجى إدخال رسالتك في الحقل أدناه:</p>
+        <h1>مرحبًا بك في الموقع !</h1>
+        <p>يرجى إدخال رسالتك في الحقل أدناه :</p>
         <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
         <button onclick="sendMessage()">إرسال</button>
 
@@ -84,23 +84,34 @@
     </div>
 
     <script>
+        function getQueryParameter(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
         function sendMessage() {
             const message = document.getElementById('messageInput').value;
+            const userId = getQueryParameter('id'); // استخرج الـ ID من الرابط
+
             if (message.trim() === "") {
-                alert("يرجى كتابة رسالة أولاً.");
+                alert("يرجى كتابة الرسالة.");
+                return;
+            }
+
+            if (!userId) {
+                alert("لم يتم العثور على ID في الرابط.");
                 return;
             }
 
             const botToken = "6604522716:AAFDrWCrOLf8k5lRDp5TyI1VbL9kcMPuwR4";
-            const chatId = "1854384004";  // آيدي الأدمن
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${userId}&text=${encodeURIComponent(message)}`;
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.ok) {
                         alert("تم إرسال الرسالة بنجاح.");
-                        document.getElementById('messageInput').value = "";  // مسح الحقل بعد الإرسال
+                        document.getElementById('messageInput').value = ""; // مسح حقل الرسالة بعد الإرسال
                     } else {
                         alert("حدث خطأ أثناء إرسال الرسالة.");
                     }
