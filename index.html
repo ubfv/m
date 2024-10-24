@@ -67,6 +67,15 @@
             margin-top: 30px;
             color: #95a5a6;
             font-size: 0.9em; /* حجم الخط أصغر */
+            position: absolute; /* جعل الفوتر في الأسفل */
+            bottom: 10px; /* المسافة من الأسفل */
+            left: 50%;
+            transform: translateX(-50%); /* محاذاة الفوتر في الوسط */
+        }
+        .thank-you {
+            margin-top: 30px;
+            color: #95a5a6;
+            font-size: 0.9em; /* حجم الخط أصغر */
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -81,7 +90,11 @@
         <p>يرجى إدخال رسالتك في الحقل أدناه :</p>
         <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
         <button onclick="sendMessage()">إرسال</button>
-
+        
+        <div class="thank-you">
+            <p>شكرًا لزيارتك!</p> <!-- إعادة نص الشكر -->
+        </div>
+        
         <footer>
             <p>All rights reserved to Souris Freedom Channel.</p> <!-- نص حقوق القناة باللغة الإنجليزية -->
         </footer>
