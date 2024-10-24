@@ -14,6 +14,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative; /* لجعل الفوتر في الأسفل */
         }
         .container {
             width: 90%;
@@ -64,7 +65,6 @@
             background-color: #2980b9;
         }
         footer {
-            margin-top: 30px;
             color: #95a5a6;
             font-size: 0.9em; /* حجم الخط أصغر */
             position: absolute; /* جعل الفوتر في الأسفل */
@@ -94,11 +94,11 @@
         <div class="thank-you">
             <p>شكرًا لزيارتك!</p> <!-- إعادة نص الشكر -->
         </div>
-        
-        <footer>
-            <p>All rights reserved to Souris Freedom Channel.</p> <!-- نص حقوق القناة باللغة الإنجليزية -->
-        </footer>
     </div>
+
+    <footer>
+        <p>© Souris Freedom Channel</p> <!-- نص حقوق القناة باللغة الإنجليزية -->
+    </footer>
 
     <script>
         function getQueryParameter(param) {
