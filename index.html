@@ -18,8 +18,7 @@
         }
         .container {
             width: 90%;
-            max-width: 600px;
-            max-height: 80%; /* تصغير الحجم */
+            max-width: 480px; /* تصغير الحجم الداخلي إلى 60% */
             background-color: #f3e5f5; /* لون بنفسجي فاتح للصفحة الداخلية */
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -30,7 +29,7 @@
         }
         .icon {
             font-size: 100px;
-            color: #2980b9; /* لون أزرق داكن للرمز بدلاً من الأحمر */
+            color: #2980b9; /* لون أزرق داكن للرمز */
             margin-bottom: 20px;
         }
         h1 {
@@ -49,11 +48,10 @@
             border-radius: 5px;
             margin-bottom: 20px;
             font-size: 1.1em;
-            color: #34495e;
         }
         button {
             padding: 12px 25px;
-            background-color: #3498db; /* أزرق */
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
@@ -62,23 +60,15 @@
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #2980b9;
+            background-color: #45a049;
         }
         footer {
-            color: #95a5a6;
-            font-size: 0.9em; /* حجم الخط أصغر */
-            position: absolute; /* جعل الفوتر في الأسفل */
-            bottom: 10px; /* المسافة من الأسفل */
-            left: 50%;
-            transform: translateX(-50%); /* محاذاة الفوتر في الوسط */
-        }
-        .thank-you {
-            margin-top: 30px;
-            color: #95a5a6;
-            font-size: 0.9em; /* حجم الخط أصغر */
-        }
-        .footer-text {
-            color: #000; /* لون نص حقوق السورس بالأسود */
+            position: absolute;
+            bottom: 10px; /* جعل الفوتر في الأسفل */
+            width: 100%; /* جعل الفوتر بعرض الصفحة */
+            text-align: center; /* توسيط النص */
+            color: #000; /* اللون الأسود */
+            font-size: 14px; /* حجم الخط للفوتر */
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -93,14 +83,14 @@
         <p>يرجى إدخال رسالتك في الحقل أدناه :</p>
         <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
         <button onclick="sendMessage()">إرسال</button>
-        
-        <div class="thank-you">
-            <p>شكرًا لزيارتك!</p> <!-- إعادة نص الشكر -->
-        </div>
+
+        <footer>
+            <p>شكراً لزيارتك!</p>
+        </footer>
     </div>
 
     <footer>
-        <p class="footer-text">© rights Freedom</p> <!-- نص حقوق القناة بالأسود -->
+        <p style="color: #000;">© Souris Freedom Channel</p> <!-- نص الحقوق -->
     </footer>
 
     <script>
@@ -143,4 +133,3 @@
     </script>
 </body>
 </html>
-
